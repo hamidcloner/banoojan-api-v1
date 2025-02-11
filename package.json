@@ -1,0 +1,37 @@
+{
+  "name": "banoojan_api_service",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon node server.js"
+  },
+  "author": "hamidkalanakii@gmail.com",
+  "_moduleAliases": {
+    "@root": ".",
+    "@modules": "src/modules",
+    "@middlewares": "src/middlewares",
+    "@config": "src/config",
+    "@common": "src/common",
+    "@utils": "src/utils",
+    "@routes": "src/routes",
+    "@services": "src/services"
+  },
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "auto-bind": "^3.0.0",
+    "axios": "^1.7.9",
+    "chalk": "^4.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "http-codes": "^1.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "module-alias": "^2.2.3"
+  }
+}
