@@ -79,6 +79,8 @@ class AuthService{
         const applicant_Time = new Date().getTime();
 
         // === check condition ===
+
+        // last check was correct!
         if(!(registered_OTPcode === otp && applicant_Time < registered_expiredIn)){
             throw {status : 400,message : CommonResStatusMessage?.BadRequest,errors : {
                 otp : {

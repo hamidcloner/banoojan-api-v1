@@ -24,10 +24,11 @@ class AuthController{
     }
     async mobileLoginApproachByOTP_getOTP(req,res,next){
         const {mobileNumber,otp} = req.body;
+        console.log("mobileNumber : ",mobileNumber)
+        console.log("otp : ",otp)
         try{
             const {verifiedUser,access_token} = await this.#service.checkValidOTP(otp,mobileNumber);
             return res.status(httpCodes.OK).json(successResGen(httpCodes.OK,UserAuthModuleMessages?.LoginSuccess,{
-                verifiedUser,
                 access_token
             }))
         }catch(error){

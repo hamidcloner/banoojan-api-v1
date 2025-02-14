@@ -16,6 +16,14 @@ router.post("/login/check-otp",[
     removeDestructiveRegister_CheckOTP_ReqBody(authDataValidation.clearBody_checkOTP_ness_necessaryData)
 ],authController.mobileLoginApproachByOTP_getOTP)
 
+router.post("/login/send-otp/error",function(req,res,next){
+    try{
+        throw {status : 500,message : "Internal server Error",errors : {}}
+    }catch(err){
+        next(err)
+    }
+})
+
 
 
 module.exports = router;
