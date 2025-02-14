@@ -18,7 +18,8 @@ class AuthService{
     #smsService;
     // query-projections
     #returnedUser_sendOTP_projection = {favoritesSubjects : 0,savedSubjects : 0,verifiedMobile : 0,__v : 0};
-    #returnedUser_after_protected_route_permission = {mobileNumber : 1,userName : 1,skils : 1,_id : 0}
+    #returnedUser_after_protected_route_permission = {mobileNumber : 1,userName : 1,skils : 1,_id : 0};
+    #returnedUser_after_checkOTP = {skils : 1,mobileNumber : 1,isAuthenticated : 1,_id : 0}
     #tokenExpiredIn_time = "7d";
     #toke_secretKey = process.env.AUTH_JWT_SECRET_KEY;
     // and other projections
@@ -33,7 +34,8 @@ class AuthService{
         this.OTPfactory = this.OTPfactory.bind(this);
         this.checkValidOTP = this.checkValidOTP.bind(this);
         this.verifyUserBySignedToken = this.verifyUserBySignedToken.bind(this);
-        this.findUserById = this.findUserById.bind(this)
+        this.findUserById = this.findUserById.bind(this);
+        this.findUserByUniqueProperty = this.findUserByUniqueProperty.bind(this);
     }
 
     // ==== generate OTP code and set expiredIn-time for it! ====
@@ -109,19 +111,26 @@ class AuthService{
         // ============ New Check OTP logic finish =================
 
         applicantUser.verifiedMobile = true;
+        applicantUser.isAuthenticated = true;
         await applicantUser.save();
         const access_token = await this.tokenGenerator(mobileNumber);
+        const verifiedUser = await this.findUserByUniqueProperty({mobileNumber},this.#returnedUser_after_checkOTP);
         return {
-            applicantUser,
+            verifiedUser,
             access_token
         };
     }
     // ================= define utility methods ==================
     async checkExistUserByMobileNumber(mobileNumber){
         const applicantUser = await this.#model.findOne({mobileNumber});
-        if(!applicantUser) throw {message : CommonResStatusMessage?.BadRequest,status : 400,errors : {message : UserAuthModuleMessages?.MobileNubmerNotFound}}
+        if(!applicantUser) throw {message : CommonResStatusMessage?.BadRequest,status : 400,errors : {
+            mobileNumber : {
+                message : UserAuthModuleMessages?.MobileNubmerNotFound
+            }
+        }}
         return applicantUser;
     }
+
     // returned user if it saved later OR save it in db and returned
     async setMobileNumber(mobileNumber){
         const applicantUser = await this.#model.findOne({mobileNumber});
@@ -148,7 +157,7 @@ class AuthService{
         })
     }
     // find user after across protected-route-guard based on payload
-    async findUserById(id){
+    async findUserById(id,customProjection={}){
         if(!authDataValidation.checkValidMongooseID(id)){
             throw {status : 400,message : CommonResStatusMessage?.BadRequest,errors : {
                 id : {
@@ -156,7 +165,7 @@ class AuthService{
                 }
             }}
         }
-        const verifiedUser = await this.#model.findById(id).select(this.#returnedUser_after_protected_route_permission);
+        const verifiedUser = await this.#model.findById(id).select(customProjection);
         console.log("returnedUser : ",verifiedUser)
         if(!verifiedUser){
             throw {status : 404,message : CommonResStatusMessage?.NotFound,errros : {
@@ -166,6 +175,28 @@ class AuthService{
             }}
         }
         return verifiedUser;
+    }
+    // find user by unique-property with custom-projection
+    async findUserByUniqueProperty(uniqueKey,customProjection){
+            /**
+             * @param {object} uniqueKey =EX=> {mobileNumber : "09121111111"}
+             */
+            if(!(Object.keys(uniqueKey).length === 1)){
+                throw {status : 500,errors : {
+                    enteredArg : "uniqueKey arg must be a object that contains one pair key-value"
+                }}
+            }
+            const foundedUser = await this.#model.findOne(uniqueKey).select(customProjection);
+            if(!foundedUser){
+                throw {status : 404,message : CommonResStatusMessage?.BadRequest,errors : {
+                    message : {
+                        [uniqueKey] : {
+                            message : UserAuthModuleMessages?.NotFound_User_By_UniqueKey
+                        }
+                    }
+                }}
+            }
+            return foundedUser;
     }
     #jwtVerifypromisify(receivedToken){
         return new Promise((resolve,reject) => {
@@ -184,7 +215,7 @@ class AuthService{
     async verifyUserBySignedToken(receivedToken){
         const decodedUser = await this.#jwtVerifypromisify(receivedToken);
         const userID = decodedUser._id;
-        const verifiedUer = await this.findUserById(userID);
+        const verifiedUer = await this.findUserById(userID,{mobileNumber : 1,skils : 1,verifiedMobile : 1});
         return verifiedUer;
     }
 }

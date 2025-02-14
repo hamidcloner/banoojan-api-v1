@@ -23,7 +23,7 @@ router.post("/login/send-otp/error",function(req,res,next){
         next(err)
     }
 })
-
+router.post("/login/test-new-queries",authController.testNewQueries)
 
 
 module.exports = router;

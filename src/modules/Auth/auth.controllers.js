@@ -11,6 +11,9 @@ class AuthController{
     constructor(){
         this.mobileLoginApproachByOTP_sendOTP = this.mobileLoginApproachByOTP_sendOTP.bind(this);
         this.mobileLoginApproachByOTP_getOTP = this.mobileLoginApproachByOTP_getOTP.bind(this);
+        // ================== Test BIND ===========================
+        this.testNewQueries = this.testNewQueries.bind(this);
+        // ==========================================================
         this.#service = authService;
     }
     async mobileLoginApproachByOTP_sendOTP(req,res,next){
@@ -24,16 +27,28 @@ class AuthController{
     }
     async mobileLoginApproachByOTP_getOTP(req,res,next){
         const {mobileNumber,otp} = req.body;
-        console.log("mobileNumber : ",mobileNumber)
-        console.log("otp : ",otp)
         try{
             const {verifiedUser,access_token} = await this.#service.checkValidOTP(otp,mobileNumber);
             return res.status(httpCodes.OK).json(successResGen(httpCodes.OK,UserAuthModuleMessages?.LoginSuccess,{
-                access_token
+                access_token,
+                verifiedUser
             }))
         }catch(error){
             // go to exception-handler
             next(error);
+        }
+    }
+    async testNewQueries(req,res,next){
+        try{
+            const {mobileNumber} = req.body;
+            const result = await this.#service.findUserByUniqueProperty({mobileNumber},{_id : 0})
+            return res.status(200).json({
+                success : true,
+                status : 200,
+                data : result
+            })
+        }catch(err){
+            next(err)
         }
     }
 }

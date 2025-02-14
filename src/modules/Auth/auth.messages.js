@@ -38,6 +38,10 @@ const UserAuthModuleMessages = Object.freeze({
     UnAuthorized_Access_Routes : {
         Token_Not_Send : "you should send access-token!your request must be have `token` property and valid signed-token value",
         Token_Not_Valid : "sorry!your signed-token is invalid OR expired!"
+    },
+    NotFound_User_By_UniqueKey : {
+        en_message : "not found any user with this field",
+        fa_message : "کاربری با این مشخصات پیدا نشد"
     }
 
 })

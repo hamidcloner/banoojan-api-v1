@@ -14,7 +14,8 @@ router.get("/",[createProtectedRoutes.protectUsersRoute],function(req,res,next){
     console.log("modifiedBody : ",req.body)
     return res.status(200).json({
         seccess : true,
-        message : "you authenticate successfully"
+        message : "you authenticate successfully",
+        data : req.body
     })
 })
 router.get("/test-sms-like",userControllers.sendMarketingSMS);

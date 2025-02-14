@@ -40,6 +40,10 @@ const userAuthSchema = new mongoose.Schema({
         type : userOtp,
         required : false
     },
+    isAuthenticated : {
+        type : Boolean,
+        default : false,
+    },
     // ===== another later! ============
     email : {
         type : String,

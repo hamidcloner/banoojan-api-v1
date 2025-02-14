@@ -20,7 +20,13 @@ class CreateProtectedRoute{
     }
     async protectUsersRoute(req,res,next){
         try{
-            const {token} = req.body;
+            // const {token} = req.body;
+            /**
+             * @param {string} authHeader
+             */
+            const authHeader = req.headers['authorization']; 
+            const token = authHeader.split(" ")[1];
+            console.log("token : ",token)
             if(!token){
                 res.status(401).json(failedResGen(401,CommonResStatusMessage?.UnAuthorized,{
                     token : {
@@ -34,7 +40,6 @@ class CreateProtectedRoute{
             console.log("verifiedUser(guard) : ",verifiedUser)
             req.body.verifiedUser = verifiedUser;
             req.body.isAuthenticated = true;
-            console.log("BBBBB ==> : ",req.body)
             next()
 
         }catch(err){
