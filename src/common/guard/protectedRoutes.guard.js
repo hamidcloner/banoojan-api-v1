@@ -39,7 +39,6 @@ class CreateProtectedRoute{
             const verifiedUser = await this.#authservice.verifyUserBySignedToken(token);
             console.log("verifiedUser(guard) : ",verifiedUser)
             req.body.verifiedUser = verifiedUser;
-            req.body.isAuthenticated = true;
             next()
 
         }catch(err){
