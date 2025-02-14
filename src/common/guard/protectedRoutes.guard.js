@@ -24,7 +24,15 @@ class CreateProtectedRoute{
             /**
              * @param {string} authHeader
              */
-            const authHeader = req.headers['authorization']; 
+            const authHeader = req.headers?.['authorization']; 
+            if(!authHeader){
+                return res.status(401).json(failedResGen(401,CommonResStatusMessage?.UnAuthorized,{
+                    requestHeaders : {
+                        message : UserAuthModuleMessages?.UnAuthorized_Req_Headers
+
+                    }
+                }))
+            }
             const token = authHeader.split(" ")[1];
             console.log("token : ",token)
             if(!token){

@@ -1,15 +1,58 @@
 const httpSMSClient = require("@services/smsManager/smsRequests.service");
-const axios = require("axios")
+// const axios = require("axios")
+const userService = require("@modules/User/user.service");
+const httpCodes = require("http-codes");
+const {successResGen} = require("@common/responseStructure");
+const {UserMessages} = require("@modules/User/user.messages");
 
 
 class UserControllers{
+    /**
+     * received default req.body after affected protected-middleware
+     * @param {object} verifiedUser => {_id : ,mobileNumber : ,verifiedMobile : skils : }
+     */
     #smsService;
+    #service;
     constructor(){
         this.#smsService = httpSMSClient;
+        this.#service = userService;
         this.sendVerifiedOTPCode = this.sendVerifiedOTPCode.bind(this);
-        this.sendMarketingSMS = this.sendMarketingSMS.bind(this)
+        this.sendMarketingSMS = this.sendMarketingSMS.bind(this);
+        this.addNewSkil = this.addNewSkil.bind(this)
         
     }
+    async addNewSkil(req,res,next){
+        try{
+            const {skils,verifiedUser : {_id : id}} = req.body;
+            const modifiedUser = await this.#service.AddSkils(skils,id);
+            return res.status(httpCodes.CREATED).json(successResGen(httpCodes.CREATED,UserMessages?.ADD_SKILS_SUCCESSFULLY,{
+                modifiedUser
+            }))
+
+        }catch(error){
+            next(error)
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     async sendVerifiedOTPCode(req,res,next){
         try{
             // const result = await this.#smsService.SendOTPVerifiedSMS_Fast("09357324849","2569");

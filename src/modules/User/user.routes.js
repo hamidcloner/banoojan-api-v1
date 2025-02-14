@@ -10,6 +10,11 @@ const userControllers = require("@modules/User/user.controllers")
 
 
 // theas routes startsWith "/user"
+router.post("/add-new-skils",userControllers.addNewSkil);
+
+
+
+
 router.get("/",[createProtectedRoutes.protectUsersRoute],function(req,res,next){
     console.log("modifiedBody : ",req.body)
     return res.status(200).json({
