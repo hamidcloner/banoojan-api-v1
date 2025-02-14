@@ -81,14 +81,33 @@ class AuthService{
         // === check condition ===
 
         // last check was correct!
-        if(!(registered_OTPcode === otp && applicant_Time < registered_expiredIn)){
+        // if(!(registered_OTPcode === otp && applicant_Time < registered_expiredIn)){
+        //     throw {status : 400,message : CommonResStatusMessage?.BadRequest,errors : {
+        //         otp : {
+        //             message : UserAuthModuleMessages?.OTPcode_OR_ExpiredIn_Invalid
+        //         }
+        //     }}
+        // }
+
+        // ============== New check otp logic ============
+        // check just valid OR invalid otp-code
+        if(!(registered_OTPcode === otp)){
             throw {status : 400,message : CommonResStatusMessage?.BadRequest,errors : {
                 otp : {
-                    message : UserAuthModuleMessages?.OTPcode_OR_ExpiredIn_Invalid
+                    message : UserAuthModuleMessages?.OTPcode_Invalid
                 }
             }}
-
         }
+        // check just otp-time was expired or not
+        if(!(applicant_Time < registered_expiredIn)){
+            throw {status : 400,message : CommonResStatusMessage?.BadRequest,errors : {
+                otp : {
+                    message : UserAuthModuleMessages?.OTPcode_time_expired
+                }
+            }}
+        }
+        // ============ New Check OTP logic finish =================
+
         applicantUser.verifiedMobile = true;
         await applicantUser.save();
         const access_token = await this.tokenGenerator(mobileNumber);

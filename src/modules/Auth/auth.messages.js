@@ -8,6 +8,15 @@ const UserAuthModuleMessages = Object.freeze({
         en_message : "otp code is not valid OR otp time was expired!",
         fa_message : "رمز یکبار مصرف شما نامعنبر است یا زمان انقضای آن به پایان رسیده است"
     },
+    OTPcode_Invalid : {
+        en_message : "sorry!otp code is invalid!",
+        fa_message : "کد نادرست است،دقت کنید",
+    },
+    OTPcode_time_expired : {
+        en_message : "otp-code time was expired!",
+        fa_message : "زمان استفاده از کد،به پایان رسید،دوباره درخواست بدید"
+
+    },
     IncorrectMobileNumber : {
         en_message : "your mobileNumber is not valid!",
         fa_message : "شماره همراه وارد شده نادرست است"
