@@ -5,12 +5,17 @@ const createProtectedRoutes = require("@common/guard/protectedRoutes.guard");
 // const createProtectedRoutes = require("../../common/guard/protectedRoutes.guard")
 
 
+// test import 
+const OrganizationalRolesModel = require("@modules/User/user.models")
+
+
 const userControllers = require("@modules/User/user.controllers")
 
 
 
 // theas routes startsWith "/user"
 router.post("/add-new-skils",userControllers.addNewSkil);
+router.post("/add-user-feedback-comment",userControllers.addFeedbackComment);
 
 
 
@@ -24,6 +29,9 @@ router.get("/",[createProtectedRoutes.protectUsersRoute],function(req,res,next){
     })
 })
 router.get("/test-sms-like",userControllers.sendMarketingSMS);
+
+
+
 router.get("/test-client",function(req,res,next){
     return res.status(200).json({
         data : [

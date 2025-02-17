@@ -18,13 +18,13 @@ class UserControllers{
         this.#service = userService;
         this.sendVerifiedOTPCode = this.sendVerifiedOTPCode.bind(this);
         this.sendMarketingSMS = this.sendMarketingSMS.bind(this);
-        this.addNewSkil = this.addNewSkil.bind(this)
-        
+        this.addNewSkil = this.addNewSkil.bind(this);  
+        this.addFeedbackComment = this.addFeedbackComment.bind(this);  
     }
     async addNewSkil(req,res,next){
         try{
-            const {skils,verifiedUser : {_id : id}} = req.body;
-            const modifiedUser = await this.#service.AddSkils(skils,id);
+            const {skil,verifiedUser : {_id : id}} = req.body;
+            const modifiedUser = await this.#service.AddSkils(skil,id);
             return res.status(httpCodes.CREATED).json(successResGen(httpCodes.CREATED,UserMessages?.ADD_SKILS_SUCCESSFULLY,{
                 modifiedUser
             }))
@@ -32,6 +32,18 @@ class UserControllers{
         }catch(error){
             next(error)
         }
+    }
+    async addFeedbackComment(req,res,next){
+        try{
+            const {feedbackComment,verifiedUser : {_id : id}} = req.body;
+            const modifiedUser = await this.#service.AddVisitedWebFeedbackComment(feedbackComment,id);
+            return res.status(httpCodes.CREATED).json(successResGen(httpCodes.CREATED,UserMessages?.ADD_FEEDBACK_COMMENT_SUCCESSFULLY,{
+                modifiedUser
+            }))
+        }catch(error){
+            next(error)
+        }
+
     }
 
 

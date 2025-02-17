@@ -24,7 +24,11 @@ const userAuthSchema = new mongoose.Schema({
         type : String,
         required : false, // become false!
     },
-    skils : {
+    feedbackComment : {
+        type : String,
+        required : false
+    },
+    skil : {
         type : String,
         required : false,
         enum : {
@@ -32,6 +36,11 @@ const userAuthSchema = new mongoose.Schema({
             message : (receivedValue) => `incorrect \'${receivedValue.value}'\ for \'skil field'\,skil must be into [\'developer\',\'motion_graphics_designer\',\'mentee\',\'accountant\',\'huamn_resource_manager\']`
         }
     },
+    // just for initial test 
+    role : {
+        type : String,
+    },
+    // ======================
     verifiedMobile : {
         type : Boolean,
         default : false
