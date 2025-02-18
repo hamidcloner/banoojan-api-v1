@@ -20,6 +20,7 @@ class AuthService{
     #returnedUser_sendOTP_projection = {favoritesSubjects : 0,savedSubjects : 0,verifiedMobile : 0,__v : 0};
     #returnedUser_after_protected_route_permission = {mobileNumber : 1,userName : 1,skils : 1,_id : 0};
     #returnedUser_after_checkOTP = {skils : 1,mobileNumber : 1,isAuthenticated : 1,_id : 0}
+    returnedUser_after_checkAuth = {skil : 1,mobileNumber : 1,_id : 0}
     #tokenExpiredIn_time = "7d";
     #toke_secretKey = process.env.AUTH_JWT_SECRET_KEY;
     // and other projections
@@ -111,7 +112,7 @@ class AuthService{
         // ============ New Check OTP logic finish =================
 
         applicantUser.verifiedMobile = true;
-        applicantUser.isAuthenticated = true;
+        // applicantUser.isAuthenticated = true;
         await applicantUser.save();
         const access_token = await this.tokenGenerator(mobileNumber);
         const verifiedUser = await this.findUserByUniqueProperty({mobileNumber},this.#returnedUser_after_checkOTP);
@@ -177,7 +178,7 @@ class AuthService{
         return verifiedUser;
     }
     // find user by unique-property with custom-projection
-    async findUserByUniqueProperty(uniqueKey,customProjection){
+    async findUserByUniqueProperty(uniqueKey,customProjection={}){
             /**
              * @param {object} uniqueKey =EX=> {mobileNumber : "09121111111"}
              */

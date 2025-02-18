@@ -45,6 +45,11 @@ const UserAuthModuleMessages = Object.freeze({
     NotFound_User_By_UniqueKey : {
         en_message : "not found any user with this field",
         fa_message : "کاربری با این مشخصات پیدا نشد"
+    },
+    CHECK_AUTH_SUCCESSFULLY : {
+        en_message : "User Auhtenticated SuccessFully",
+        fa_message : "شناسایی کاربر موفقیت آمیز بود"
+
     }
 
 })

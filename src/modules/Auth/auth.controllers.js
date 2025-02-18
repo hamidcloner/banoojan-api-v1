@@ -11,6 +11,7 @@ class AuthController{
     constructor(){
         this.mobileLoginApproachByOTP_sendOTP = this.mobileLoginApproachByOTP_sendOTP.bind(this);
         this.mobileLoginApproachByOTP_getOTP = this.mobileLoginApproachByOTP_getOTP.bind(this);
+        this.checkAuthByJWT = this.checkAuthByJWT.bind(this)
         // ================== Test BIND ===========================
         this.testNewQueries = this.testNewQueries.bind(this);
         // ==========================================================
@@ -38,6 +39,26 @@ class AuthController{
             next(error);
         }
     }
+    async checkAuthByJWT(req,res,next){
+        const {verifiedUser : {_id : id}} = req.body;
+        const accepteduser = await this.#service.findUserById(id,this.#service.returnedUser_after_checkAuth);
+        // return res.status(httpCodes.OK).json({
+        //     success : true,
+        //     status : httpCodes.OK,
+        //     message : UserAuthModuleMessages?.CHECK_AUTH_SUCCESSFULLY,
+        //     isAuthenticate : true,
+        //     data : {
+        //         accepteduser,
+        //         isAuthenticated : true
+        //     }
+        // })
+        return res.status(httpCodes.OK).json(successResGen(httpCodes.OK,UserAuthModuleMessages?.CHECK_AUTH_SUCCESSFULLY,{
+            isAuthenticated : true,
+            accepteduser
+        }))
+
+    }
+    // ========= Test ==============
     async testNewQueries(req,res,next){
         try{
             const {mobileNumber} = req.body;
