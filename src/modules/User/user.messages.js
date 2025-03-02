@@ -10,6 +10,11 @@ const UserMessages = Object.freeze({
     NotFound_User_By_UniqueKey : {
         en_message : "not found any user with this field",
         fa_message : "کاربری با این مشخصات پیدا نشد"
+    },
+    SEND_USER_SPECIFIC_INFO_SUCCESSFULLY : {
+        en_message : "send user specific user inof successFully",
+        fa_message : "اطلاعات کاربر موردنظر با موفقیت ارسال شد"
+
     }
 
 

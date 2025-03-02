@@ -20,6 +20,7 @@ class UserControllers{
         this.sendMarketingSMS = this.sendMarketingSMS.bind(this);
         this.addNewSkil = this.addNewSkil.bind(this);  
         this.addFeedbackComment = this.addFeedbackComment.bind(this);  
+        this.sendChoosenUserFields = this.sendChoosenUserFields.bind(this)
     }
     async addNewSkil(req,res,next){
         try{
@@ -43,6 +44,31 @@ class UserControllers{
         }catch(error){
             next(error)
         }
+    }
+    async sendChoosenUserFields(req,res,next){
+        try{
+            console.log("====== ChoosenUserField Controller =======")
+            const params = req.params;
+            const {verifiedUser : {_id : id}} = req.body;
+            /**
+             * params : {
+             *      fields : "field1-field2-...." 
+             * }
+             */
+            const arrayOfFields = params.fields.split("-");
+            const fieldsProjection = {_id : 0};
+            arrayOfFields.forEach((field) => {
+                fieldsProjection[field] = 1 
+            });
+            console.log("this => ",this.#service)
+            const returnedUserInfo = await this.#service.findUserById(id,fieldsProjection)
+            return res.status(httpCodes.OK).json(successResGen(httpCodes.OK,UserMessages?.SEND_USER_SPECIFIC_INFO_SUCCESSFULLY,{
+                user : returnedUserInfo
+            }))
+        }catch(error){
+            next(error)
+        }
+
 
     }
 

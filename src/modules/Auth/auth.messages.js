@@ -1,9 +1,12 @@
 const UserAuthModuleMessages = Object.freeze({
-    MobileNubmerNotFound : "mobileNumber not found!please register your mobileNumber",
     OPTcodeSent : "OTP code sent successFully!",
     MobileNumberIsRequired : "mobileNumber is required,please send it",
     LoginSuccess : "your logged in successFully!",
     // user ui message => with persian-text message
+    MobileNubmerNotFound : {
+        en_message : "mobileNumber not found!please register your mobileNumber",
+        fa_message : "هنوز شماره موبایل را وارد نکردید،ابتدا شماره موبایل را ارسال کنید"
+    },
     OTPcode_OR_ExpiredIn_Invalid : {
         en_message : "otp code is not valid OR otp time was expired!",
         fa_message : "رمز یکبار مصرف شما نامعنبر است یا زمان انقضای آن به پایان رسیده است"
@@ -23,7 +26,7 @@ const UserAuthModuleMessages = Object.freeze({
     },
     OTPcodeNotExpired : {
         en_message : "your previous otp code not expired yet!please try again later",
-        fa_message : "رمز یکبار مصرف قبلی هنوز منقضی نشده است،بعدا دوباره تلاش کنید"
+        fa_message : "رمز یکبار مصرف قبلی هنوز منقضی نشده است،بعد از 2 دقیقه دوباره تلاش کنید"
     },
     OTP_OR_MobileNumber_Required : {
         en_message : "mobileNumber or OTP code is Required,but not sent!",

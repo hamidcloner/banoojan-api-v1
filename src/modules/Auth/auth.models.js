@@ -18,7 +18,8 @@ const userOtp = new mongoose.Schema({
 const userAuthSchema = new mongoose.Schema({
     mobileNumber : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     userName : {
         type : String,
@@ -28,13 +29,29 @@ const userAuthSchema = new mongoose.Schema({
         type : String,
         required : false
     },
+    stepOfVerification : {
+        type : Number,
+    },
     skil : {
         type : String,
         required : false,
+        get : (skil) => {
+            const validSkilValues = ["developer","motion_graphics_designer","mentee","accountant","huamn_resource_manager"];
+            const transferToFa = [["developer","برنامه نوبس"],["motion_graphics_designer","موشن گرافیست"],["mentee","کارآموز"],["accountant","حسابدار"],["huamn_resource_manager","مدیر منابع انسانی (HR)"]]
+            const pairFaEn = transferToFa.find((item) => item[0] === skil)
+            return {
+                fa : pairFaEn[1],
+                en : pairFaEn[0]
+            }
+        },
         enum : {
             values : ["developer","motion_graphics_designer","mentee","accountant","huamn_resource_manager"],
             message : (receivedValue) => `incorrect \'${receivedValue.value}'\ for \'skil field'\,skil must be into [\'developer\',\'motion_graphics_designer\',\'mentee\',\'accountant\',\'huamn_resource_manager\']`
         }
+    },
+    isAdmin : {
+        type : Boolean,
+        default : false
     },
     // just for initial test 
     role : {
@@ -72,6 +89,7 @@ const userAuthSchema = new mongoose.Schema({
 // define mongoose-schema middlewares:
 
 userAuthSchema.pre("save",function(next){
+    console.log("pre middleware is calling!")
     // Document Middleware => this refs to document
     // this.isModified() important!
     if(!(authDataValidation.mobileNumber_regPattern.test(this.mobileNumber))){
@@ -86,6 +104,12 @@ userAuthSchema.pre("save",function(next){
     }
     next()
 })
+userAuthSchema.pre("findOneAndUpdate",function(next){
+    console.log("update pre middleware is calling")
+    next()
+})
+
+
 
 
 const UserAuthModel = mongoose.models.User || mongoose.model("User",userAuthSchema);

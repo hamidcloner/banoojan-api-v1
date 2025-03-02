@@ -8,6 +8,7 @@ const {UserMessages} = require("@modules/User/user.messages")
 
 class UserService{
     #model;
+    #returnedUser_after_addSkil = {verifiedMobile : 0,isAuthenticated : 0,favoritesSubjects : 0,OTPcode : 0,_id : 0,__v : 0,isAdmin : 0}
     constructor(){
         this.#model = UserAuthModel;
         this.AddSkils = this.AddSkils.bind(this);
@@ -21,7 +22,7 @@ class UserService{
                 }
             }}
         }
-        const result = await this.#model.findByIdAndUpdate(userId,{$set : {skil : skil}},{runValidators : true,new : true});
+        const result = await this.#model.findByIdAndUpdate(userId,{$set : {skil : skil}},{runValidators : true,new : true}).select(this.#returnedUser_after_addSkil);
         if(!result){
             throw {status : 404,message : CommonResStatusMessage?.NotFound,errors : {
                 user : {
@@ -50,9 +51,25 @@ class UserService{
             }}
         }
         return result;
-
-
-
+    }
+    async findUserById(id,customProjection={}){
+        if(!authDataValidation.checkValidMongooseID(id)){
+            throw {status : 400,message : CommonResStatusMessage?.BadRequest,errors : {
+                id : {
+                    message : ValidationMessage?.Invalid_ID
+                }
+            }}
+        }
+        const verifiedUser = await this.#model.findById(id).select(customProjection);
+        console.log("returnedUser : ",verifiedUser)
+        if(!verifiedUser){
+            throw {status : 404,message : CommonResStatusMessage?.NotFound,errros : {
+                id : {
+                    message : UserAuthModuleMessages?.User_Not_Found
+                }
+            }}
+        }
+        return verifiedUser;
     }
 }
 

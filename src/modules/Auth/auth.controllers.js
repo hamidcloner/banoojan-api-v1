@@ -40,22 +40,16 @@ class AuthController{
         }
     }
     async checkAuthByJWT(req,res,next){
-        const {verifiedUser : {_id : id}} = req.body;
-        const accepteduser = await this.#service.findUserById(id,this.#service.returnedUser_after_checkAuth);
-        // return res.status(httpCodes.OK).json({
-        //     success : true,
-        //     status : httpCodes.OK,
-        //     message : UserAuthModuleMessages?.CHECK_AUTH_SUCCESSFULLY,
-        //     isAuthenticate : true,
-        //     data : {
-        //         accepteduser,
-        //         isAuthenticated : true
-        //     }
-        // })
-        return res.status(httpCodes.OK).json(successResGen(httpCodes.OK,UserAuthModuleMessages?.CHECK_AUTH_SUCCESSFULLY,{
-            isAuthenticated : true,
-            accepteduser
-        }))
+        try{
+            const {verifiedUser : {_id : id}} = req.body;
+            const accepteduser = await this.#service.findUserById(id,this.#service.returnedUser_after_checkAuth);
+            return res.status(httpCodes.OK).json(successResGen(httpCodes.OK,UserAuthModuleMessages?.CHECK_AUTH_SUCCESSFULLY,{
+                isAuthenticated : true,
+                accepteduser
+            }))
+        }catch(error){
+            next(error)
+        }
 
     }
     // ========= Test ==============

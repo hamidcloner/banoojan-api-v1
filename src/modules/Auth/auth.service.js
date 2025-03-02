@@ -17,10 +17,10 @@ class AuthService{
     #model;
     #smsService;
     // query-projections
-    #returnedUser_sendOTP_projection = {favoritesSubjects : 0,savedSubjects : 0,verifiedMobile : 0,__v : 0};
+    #returnedUser_sendOTP_projection = {favoritesSubjects : 0,savedSubjects : 0,__v : 0,isAuthenticated : 0,isAdmin : 0};
     #returnedUser_after_protected_route_permission = {mobileNumber : 1,userName : 1,skils : 1,_id : 0};
     #returnedUser_after_checkOTP = {skils : 1,mobileNumber : 1,isAuthenticated : 1,_id : 0}
-    returnedUser_after_checkAuth = {skil : 1,mobileNumber : 1,_id : 0}
+    returnedUser_after_checkAuth = {skil : 1,mobileNumber : 1,_id : 0,verifiedMobile : 1,stepOfVerification : 1}
     #tokenExpiredIn_time = "7d";
     #toke_secretKey = process.env.AUTH_JWT_SECRET_KEY;
     // and other projections
@@ -70,7 +70,9 @@ class AuthService{
 
         applicantUser.OTPcode.expiredIn = expiredIn_created;
         applicantUser.OTPcode.code = randomOTP_created;
+        applicantUser.stepOfVerification = 1;
         await applicantUser.save();
+        console.log("applicantUser : ",applicantUser)
         await this.#smsService.SendOTPVerifiedSMS_Fast(mobileNumber,randomOTP_created)
         return applicantUser;
     }
@@ -112,6 +114,7 @@ class AuthService{
         // ============ New Check OTP logic finish =================
 
         applicantUser.verifiedMobile = true;
+        applicantUser.stepOfVerification = 2;
         // applicantUser.isAuthenticated = true;
         await applicantUser.save();
         const access_token = await this.tokenGenerator(mobileNumber);
@@ -134,7 +137,7 @@ class AuthService{
 
     // returned user if it saved later OR save it in db and returned
     async setMobileNumber(mobileNumber){
-        const applicantUser = await this.#model.findOne({mobileNumber});
+        const applicantUser = await this.#model.findOne({mobileNumber}).select(this.#returnedUser_sendOTP_projection);
         if(!applicantUser){
             const added_New_ApplicantUser = new this.#model({
                 mobileNumber
